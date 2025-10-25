@@ -1,0 +1,11 @@
+streamlit
+opencv-python
+numpy
+pillow
+scikit-image
+scikit-learn
+matplotlib
+tqdm
+torch
+transformers
+ffmpeg-python
