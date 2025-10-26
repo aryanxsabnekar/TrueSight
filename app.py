@@ -11,10 +11,37 @@ import numpy as np
 
 st.set_page_config(page_title="TrueSight",page_icon="👁️",layout="wide")
 
+st.markdown(
+    """
+    <style>
+    /* --- Make the file uploader blue and visually clickable --- */
+    section[data-testid="stFileUploader"] > div {
+        border: 2px dashed #5AC8FA !important;
+        border-radius: 0.75rem !important;
+        background-color: rgba(90,200,250,0.15) !important;  /* light blue fill */
+        padding: 1rem !important;
+        transition: all 0.25s ease-in-out;
+    }
+    section[data-testid="stFileUploader"] > div:hover {
+        background-color: rgba(90,200,250,0.25) !important;
+        border-color: #7BD8FF !important;
+    }
+
+    /* --- Tone down the info banner (gray / subtle) --- */
+    div[data-testid="stAlert"][class*="stAlert-info"] {
+        background-color: rgba(255,255,255,0.06) !important;  /* dark gray */
+        border: 1px solid rgba(255,255,255,0.12) !important;
+        color: #E6F1FF !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("TrueSight")
 st.markdown(
     "##### AI-Generated Video Detection\n"
-    "Upload a video to verify its authenticity and receive a transparent, data-driven verdict. Created for HackPSU Fall 2025")
+    "Upload a video to verify its authenticity and receive a transparent, data-driven verdict. Created for HackPSU Fall 2025 by Aryan Sabnekar")
 
 with st.sidebar:
     st.header("⚙️ Analysis Settings")
@@ -39,7 +66,9 @@ if uploaded is not None:
     st.success("✅ Video successfully uploaded.")
     st.video(uploaded)
 else:
-    st.info("📁 Upload a video of your choice above to start the analysis.")
+    st.markdown('<div class="truesight-cta">📁 Upload a video of your choice above to start the analysis.</div>', unsafe_allow_html=True)
+    st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
+
 
 analyze_clicked=st.button("Analyze video",type="primary",disabled=(uploaded is None))
 
