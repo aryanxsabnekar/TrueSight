@@ -15,10 +15,10 @@ with st.sidebar:
     st.divider()
     st.caption("Click to jump between sections.")
 
-st.title("About & Methodology")
+st.title("About")
 st.markdown(
     """
-TrueSight helps users assess whether a video may be **AI-generated** by analyzing frame-level forensic cues and temporal consistency.
+Built for HackPSU 2025, TrueSight is a tool that helps users assess whether a video may be **AI-generated** by analyzing frame-level forensic cues and consistency.
 
 ---
 
