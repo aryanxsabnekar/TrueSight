@@ -54,7 +54,7 @@ Built for HackPSU 2025, TrueSight is a tool that helps users assess whether a vi
 
 ## Limitations and Future Plans
 
-- This is only meant to support a desicion, not be absolute proof. You should always use your own judgement alongside these results.  
+- This is only meant to support a decision, not be absolute proof. You should always use your own judgement alongside these results.  
 - The quality of the video matters. Things such as video compression, filters, or screenshots can alter important details and can affect accuracy.
 - This program is intended to combat misinformation and promote digital trust.
 
@@ -65,8 +65,8 @@ I'm focused on making the detector both smarter with motion and confident in its
 - It will learn from motion not just snapshots. To do this we will add sequence models and optical-flow cues so the system notices subtle frame-to-frame tells (tiny flickers, texture “pops”, and micro-details) that single-frame checks miss.
 - It will also prioritize looking where it matters. By tracking faces and other key objects in a video, we can score those regions separately instead of averaging everything together.
 - It will also take advantage of sounds in videos. If the videos have audio, we'll compare lip movement and speech timing to catch weird Audio/Video mismatches.
-- It will be traind on tougher, more realistic data from premeuim generators. I will include hyper-real generated clips and lots of common edits (filters or crop resizes) to the data it is trained on.
-- It will also be upfront about uncertainty. Many text AI checkers are quick to clear or condem writing but for this video checker, we’ll calibrate the score, show a confidence band, and do our best to be upfront.
+- It will be trained on tougher, more realistic data from premium generators. I will include hyper-real generated clips and lots of common edits (filters or crop resizes) to the data it is trained on.
+- It will also be upfront about uncertainty. Many text AI checkers are quick to clear or condemn writing but for this video checker, we’ll compute a score, show its confidence, and do our best to be upfront.
 
 
 
