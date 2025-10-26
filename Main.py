@@ -51,7 +51,7 @@ with st.sidebar:
     max_frames=st.slider("Maximum Frames",15, 500, 65, step=5,
         help="Sets the total number of frames extracted for analysis. Use fewer frames for faster previews during testing.")
     
-    st.caption("💡 *Tip: Start with lower values for faster analysis, especially during development.*")
+    st.caption("💡 *Tip: Start with lower values for faster analysis!*")
 
 uploaded=st.file_uploader("Upload a short video file (.mp4, .mov, or .avi)",type=["mp4", "mov", "avi"],
     help="Choose a short clip for best performance.")

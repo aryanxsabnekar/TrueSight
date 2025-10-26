@@ -28,9 +28,9 @@ def label_from_score(score):
     """
     Map score to (label, emoji/style).
     """
-    if score>=0.66:
+    if score>=0.65:
         return ("⚠️ Likely AI-Generated","error")
-    elif score>=0.33:
+    elif score>=0.35:
         return ("🟨 Inconclusive","warning")
     else:
         return ("✅ Likely Real","success")

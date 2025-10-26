@@ -46,9 +46,9 @@ Built for HackPSU 2025, TrueSight is a tool that helps users assess whether a vi
 
 ## Score interpretation
 
-- **0.00–0.32** → ✅ *Likely Real*  
-- **0.33–0.65** → ⚠️ *Inconclusive*  
-- **0.66–1.00** → 🛑 *Likely AI-Generated*
+- **0.00–0.34** → ✅ *Likely Real*  
+- **0.35–0.64** → ⚠️ *Inconclusive*  
+- **0.65–1.00** → 🛑 *Likely AI-Generated*
 
 ---
 
