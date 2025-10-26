@@ -2,6 +2,11 @@ import streamlit as st
 from analyzer.video import sample_video_frames
 from PIL import Image
 import io
+from analyzer.features import analyze_frames
+from analyzer.aggregate import weighted_score, label_from_score
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 
 st.set_page_config(page_title="TrueSight",page_icon="👁️",layout="wide")
@@ -41,17 +46,60 @@ analyze_clicked=st.button("Analyze video",type="primary",disabled=(uploaded is N
 if uploaded is not None and analyze_clicked:
     with st.spinner("Sampling frames…"):
         data=sample_video_frames(uploaded,sampling_fps=sampling_fps,max_frames=max_frames)
+    
+    with st.spinner("Computing forensic features…"):
+        frames=data["frames"]
+        analysis=analyze_frames(frames)
+        summary=analysis["summary"]
+        score=weighted_score(summary)
+        label,style=label_from_score(score)
+
+    if style=="error":
+        verdict_box.error(f"{label}: Authenticity score: {score:.2f}")
+    elif style=="warning":
+        verdict_box.warning(f"{label}: Authenticity score: {score:.2f}")
+    else:
+        verdict_box.success(f"{label}: Authenticity score: {score:.2f}")
+
+    details_box.markdown(
+        f"""
+    **Feature Summary**
+    - ELA mean: `{summary['ela_mean']:.2f}`
+    - FFT high-freq ratio mean: `{summary['fft_mean']:.3f}`
+    - Laplacian variance mean: `{summary['lap_mean']:.1f}`
+    - Drift (ELA / FFT / LAP): `{summary['ela_drift']:.2f}` / `{summary['fft_drift']:.3f}` / `{summary['lap_drift']:.1f}`
+    """)
+
+    st.markdown("### Per-Frame Signals")
+    per=analysis["per_frame"]
+    x=np.arange(1,len(per)+1)
+    ela=[p["ela"] for p in per]
+    fft=[p["fft"] for p in per]
+
+    fig=plt.figure()
+    plt.plot(x,ela,marker="o",label="ELA")
+    plt.plot(x,fft,marker="o",label="FFT high-freq ratio")
+    plt.xlabel("Frame index")
+    plt.ylabel("Value")
+    plt.legend()
+    st.pyplot(fig)
+
+    #Here we show the 'most suspicious' 3 frames
+    st.markdown("### Top Suspicious Frames (by ELA)")
+    if frames:
+        top_idx=np.argsort([-p["ela"] for p in per])[:3]
+        cols_top=st.columns(3)
+        for j,idx in enumerate(top_idx):
+            try:
+                cols_top[j].image(frames[idx], caption=f"Frame {idx+1} (ELA {per[idx]['ela']:.1f})")
+            except Exception:
+                cols_top[j].warning(f"Frame {idx+1} could not be displayed.")
 
     meta=data["meta"]
     st.success(
         f"Sampled **{meta['sampled_count']}** frames "
         f"( ~**{meta['sampling_fps']} fps**) | Duration ~ **{meta['duration_sec']:.1f}s** | "
         f"Native **{meta['native_fps']:.2f} fps** | Resolution **{meta['width']}×{meta['height']}**")
-
-
-    verdict_box.info("Verdict: pending detection signals (next step).") #This is a placeholder for now
-
-    details_box.write("Frame-by-frame confidence, key visual indicators, and explainability insights will appear here.") #This is also a placeholder for now
 
     st.markdown("### Sampled Frames")
     thumbs=data.get("thumbs",[])
@@ -66,7 +114,7 @@ if uploaded is not None and analyze_clicked:
                 st.write(e)
     else:
         st.warning("No frames were sampled. Try a different file or lower the FPS/Max Frames settings.")
-        
+
 """
 To run, type in terminal:
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
