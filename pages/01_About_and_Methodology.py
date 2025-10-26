@@ -1,6 +1,19 @@
 import streamlit as st
 
-st.set_page_config(page_title="TrueSight — About", layout="wide")
+st.set_page_config(page_title="TrueSight | About",layout="wide")
+
+with st.sidebar:
+    st.subheader("On this page")
+    st.markdown(
+        """
+- [How it works](#how-it-works)
+- [Score interpretation](#score-interpretation)
+- [Limitations and Future Plans](#limitations-and-future-plans)
+        """,
+        unsafe_allow_html=True,
+    )
+    st.divider()
+    st.caption("Click to jump between sections.")
 
 st.title("About & Methodology")
 st.markdown(
@@ -34,16 +47,29 @@ TrueSight helps users assess whether a video may be **AI-generated** by analyzin
 ## Score interpretation
 
 - **0.00–0.32** → ✅ *Likely Real*  
-- **0.33–0.65** → 🟨 *Inconclusive*  
-- **0.66–1.00** → ⚠️ *Likely AI-Generated*
+- **0.33–0.65** → ⚠️ *Inconclusive*  
+- **0.66–1.00** → 🛑 *Likely AI-Generated*
 
 ---
 
-## Limitations & ethics
+## Limitations and Future Plans
 
 - This is only meant to support a desicion, not be absolute proof. You should always use your own judgement alongside these results.  
 - The quality of the video matters. Things such as video compression, filters, or screenshots can alter important details and can affect accuracy.
 - This program is intended to combat misinformation and promote digital trust.
+
+### How to Improve the Classifier
+
+I'm focused on making the detector both smarter with motion and confident in its choice, especially as hyper-real generators such as Sora2 get better.
+
+- It will learn from motion not just snapshots. To do this we will add sequence models and optical-flow cues so the system notices subtle frame-to-frame tells (tiny flickers, texture “pops”, and micro-details) that single-frame checks miss.
+- It will also prioritize looking where it matters. By tracking faces and other key objects in a video, we can score those regions separately instead of averaging everything together.
+- It will also take advantage of sounds in videos. If the videos have audio, we'll compare lip movement and speech timing to catch weird Audio/Video mismatches.
+- It will be traind on tougher, more realistic data from premeuim generators. I will include hyper-real generated clips and lots of common edits (filters or crop resizes) to the data it is trained on.
+- It will also be upfront about uncertainty. Many text AI checkers are quick to clear or condem writing but for this video checker, we’ll calibrate the score, show a confidence band, and do our best to be upfront.
+
+
+
 
 """
 )
