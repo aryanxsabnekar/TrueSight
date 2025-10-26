@@ -34,10 +34,16 @@ Built for HackPSU 2025, TrueSight is a tool that helps users assess whether a vi
    - **Laplacian Variance:** This measures how sharp or detailed the frame is. Extremely low values can mean the image was smoothed by an algorithm, while big jumps in sharpness between frames can be a red flag.
 
    
-3. **Temporal drift**  
+4. **Temporal drift**  
    We then compare how these change from one frame to the next. Big or unnatural shifts can indicate the video was generated rather than filmed.
 
-4. **Authenticity Score**  
+5. **Flow Instability**  
+   We compare one frame to the next and track how tiny patches of the image move. Real footage tends to move together smoothly when the camera or subject moves. AI-generated clips often have small, jittery inconsistencies where textures “swim” or hair and fabric wobble.
+
+6. **Edge Flicker**  
+   We trace the outlines of objects in back-to-back frames and measure how much those outlines jump around. In real videos the edges stay put unless something actually moves but in fake video, outlines can pop or shift slightly even when nothing should change.
+
+7. **Authenticity Score**  
    Finally, we combine all the results into a single score from 0 to 1.
    Closer to 0: Likely a real, untouched video
    Closer to 1: Likely AI-generated or heavily edited
