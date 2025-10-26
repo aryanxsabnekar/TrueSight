@@ -62,12 +62,11 @@ Built for HackPSU 2025, TrueSight is a tool that helps users assess whether a vi
 
 I'm focused on making the detector both smarter with motion and confident in its choice, especially as hyper-real generators such as Sora2 get better.
 
-- It will learn from motion not just snapshots. To do this we will add sequence models and optical-flow cues so the system notices subtle frame-to-frame tells (tiny flickers, texture “pops”, and micro-details) that single-frame checks miss.
+- It will learn from motion not just snapshots. To do this we will add true sequence models(3D CNN) that notice subtle frame-to-frame tells (tiny flickers, texture “pops”, and other micro-details) that single-frame checks tend to miss.
 - It will also prioritize looking where it matters. By tracking faces and other key objects in a video, we can score those regions separately instead of averaging everything together.
-- It will also take advantage of sounds in videos. If the videos have audio, we'll compare lip movement and speech timing to catch weird Audio/Video mismatches.
-- It will be trained on tougher, more realistic data from premium generators. I will include hyper-real generated clips and lots of common edits (filters or crop resizes) to the data it is trained on.
+- It will also take advantage of sounds in videos. If the videos have audio, we'll compare the person's lips and speech timing to catch weird Audio/Video mismatches.
+- It will be tested on tougher, more realistic data from premium generators. I will include hyper-real generated clips and lots of common edits (filters or crop resizes) to the data it is trained on.
 - It will also be upfront about uncertainty. Many text AI checkers are quick to clear or condemn writing but for this video checker, we’ll compute a score, show its confidence, and do our best to be upfront.
-
 
 
 

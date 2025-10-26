@@ -97,7 +97,7 @@ def flow_instability(prev_rgb,curr_rgb):
     mag=np.linalg.norm(flow,axis=2)
     return float(mag.std())
 
-def edge_mad(prev_rgb, curr_rgb) -> float:
+def edge_mad(prev_rgb,curr_rgb):
     """Mean abs diff of edge maps (robust to brightness changes). Scaled 0..1."""
     pg=cv2.cvtColor(prev_rgb,cv2.COLOR_RGB2GRAY)
     cg=cv2.cvtColor(curr_rgb,cv2.COLOR_RGB2GRAY)

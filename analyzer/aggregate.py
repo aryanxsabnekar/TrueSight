@@ -1,34 +1,36 @@
 from __future__ import annotations
+import math
 
-def weighted_score(summary: dict) -> float:
-    """
-    Combine features into a single authenticity score in [0,1],
-    where higher means 'more likely AI-generated'.
-    Tuned for demo; adjust after testing.
-    """
-    ela = summary["ela_mean"]          # typical 2–15
-    fft = summary["fft_mean"]          # typical 0.2–0.7
-    lap = summary["lap_mean"]          # varies with sharpness (50–4000)
-    drift = (summary["ela_drift"] + summary["fft_drift"]) / 2.0
+def _clip01(x):
+    return max(0.0,min(1.0,float(x)))
 
-    # Normalize roughly to 0..1 ranges (heuristics for hackathon demo)
-    ela_n = min(1.0, ela / 20.0)
-    fft_n = float(fft)                  # already ~0..1
-    # lower laplacian (smoother) => *more* suspicious; invert
-    lap_n = 1.0 - min(1.0, lap / 1000.0)
-    drift_n = min(1.0, drift / 10.0)
+def _sigmoid(x:float):
+    return 1.0/(1.0+math.exp(-x))
 
-    # weights — tweak after eyeballing a few videos
-    score = 0.40 * ela_n + 0.30 * fft_n + 0.20 * lap_n + 0.10 * drift_n
-    return float(max(0.0, min(1.0, score)))
+def weighted_score(summary):
+    ela_n=_clip01(summary.get("ela_mean",0.0)/20.0)
+    fft_n=_clip01(summary.get("fft_mean",0.0))
+    lap_n=_clip01(summary.get("lap_mean",0.0)/160.0)
+    drift_n=_clip01(((summary.get("ela_drift",0.0)+summary.get("fft_drift",0.0))/2.0)/10.0)
 
-def label_from_score(score: float) -> tuple[str, str]:
+    flow_n=_clip01(summary.get("flow_mean",0.0)/3.0)
+    emad_n=_clip01(summary.get("edge_mad_mean",0.0)/0.15)
+
+    base=(0.26*ela_n+0.22*fft_n+0.16*lap_n+0.16*flow_n+0.12*emad_n+0.08*drift_n)
+
+    lap_mean =summary.get("lap_mean",0.0)
+    lap_drift=summary.get("lap_drift",0.0)
+    boost=0.15*_sigmoid((lap_mean-160.0)/40.0+(lap_drift-5.0)/2.0)
+
+    return _clip01(base+boost)
+
+def label_from_score(score):
     """
     Map score to (label, emoji/style).
     """
-    if score >= 0.66:
-        return ("⚠️ Likely AI-Generated", "error")
-    elif score >= 0.33:
-        return ("🟨 Inconclusive", "warning")
+    if score>=0.66:
+        return ("⚠️ Likely AI-Generated","error")
+    elif score>=0.33:
+        return ("🟨 Inconclusive","warning")
     else:
-        return ("✅ Likely Real", "success")
+        return ("✅ Likely Real","success")

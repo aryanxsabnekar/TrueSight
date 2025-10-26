@@ -2,7 +2,7 @@ import streamlit as st
 from analyzer.video import sample_video_frames
 from PIL import Image
 import io
-from analyzer.features import analyze_frames
+from analyzer.features import analyze_frames, flow_instability, edge_mad
 from analyzer.aggregate import weighted_score, label_from_score
 import matplotlib.pyplot as plt
 import numpy as np
@@ -80,6 +80,17 @@ if uploaded is not None and analyze_clicked:
         frames=data["frames"]
         analysis=analyze_frames(frames)
         summary=analysis["summary"]
+
+        flow_vals,emad_vals=[],[]
+        for i in range(1,len(frames)):
+            prev_f=np.asarray(frames[i-1])
+            curr_f=np.asarray(frames[i])
+            flow_vals.append(flow_instability(prev_f,curr_f))
+            emad_vals.append(edge_mad(prev_f,curr_f))
+
+        summary["flow_mean"]=float(np.mean(flow_vals)) if flow_vals else 0.0
+        summary["edge_mad_mean"]=float(np.mean(emad_vals)) if emad_vals else 0.0
+
         score=weighted_score(summary)
         label,style=label_from_score(score)
 
@@ -97,6 +108,9 @@ if uploaded is not None and analyze_clicked:
     - FFT high-freq ratio mean: `{summary['fft_mean']:.3f}`
     - Laplacian variance mean: `{summary['lap_mean']:.1f}`
     - Drift (ELA / FFT / LAP): `{summary['ela_drift']:.2f}` / `{summary['fft_drift']:.3f}` / `{summary['lap_drift']:.1f}`
+    - Flow instability mean: `{summary.get('flow_mean',0.0):.3f}`
+    - Edge-change mean: `{summary.get('edge_mad_mean',0.0):.3f}`
+
     """)
 
     st.markdown("### Per-Frame Signals")
